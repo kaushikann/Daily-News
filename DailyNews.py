@@ -28,7 +28,7 @@ def Email_Tool(news):
     result = agent_executor.invoke({"input": task})
     return result
 
-st.header("blue:[Daily News]")
+st.header(":blue[Daily AI News]")
 
 if 'news' not in st.session_state:
     st.session_state['news'] = ''
@@ -36,7 +36,7 @@ if 'news' not in st.session_state:
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("What's the recent news about AI?"):
+    if st.button(":black[What's the recent news about AI?]"):
         with st.spinner("Fetching news..."):
             news = asyncio.run(News_Tool())
             st.session_state['news'] = news
