@@ -3,4 +3,5 @@ langchain
 langchain-openai
 composio-langchain
 scrapegraphai
-nest_asyncio 
+nest_asyncio
+openai-agents
