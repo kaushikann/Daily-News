@@ -36,7 +36,7 @@ if 'news' not in st.session_state:
 col1, col2 = st.columns(2)
 
 with col1:
-    if st.button(":black[What's the recent news about AI?]"):
+    if st.button("What's the recent news about AI?", type="primary"):
         with st.spinner("Fetching news..."):
             news = asyncio.run(News_Tool())
             st.session_state['news'] = news
