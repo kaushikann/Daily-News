@@ -45,7 +45,7 @@ if st.button("Send this news via Email"):
     if st.session_state['news']:
         with st.spinner("Sending email..."):
             try:
-                Email_Tool(st.session_state['news'])
+                Email_Tool(st.session_state['news'],email)
                 st.success("Email sent!")
             except Exception as e:
                 st.error(f"Failed to send email: {e}")
