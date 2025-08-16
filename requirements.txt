@@ -1,7 +1,8 @@
 streamlit
 langchain
 langchain-openai
-composio-langchain
+composio
 scrapegraphai
 nest_asyncio
 openai-agents
+
