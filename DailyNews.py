@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 model = ChatOpenAI(model="gpt-4o-mini")
 from langchain.agents import create_openai_functions_agent, AgentExecutor
 from langchain import hub
-from composio import ComposioToolSet, Action, App
+from composio import ComposioToolSet
 from agents import Agent, Runner, WebSearchTool
 import asyncio
 
