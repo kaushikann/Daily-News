@@ -2,12 +2,14 @@ import streamlit as st
 import os
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 from langchain_openai import ChatOpenAI
+from openai import OpenAI
 model = ChatOpenAI(model="gpt-4o-mini")
 from langchain.agents import create_openai_functions_agent, AgentExecutor
 from langchain import hub
-from composio import ComposioToolSet
+from composio import Composio
 from agents import Agent, Runner, WebSearchTool
 import asyncio
+
 
 async def News_Tool():
     agent = Agent(name="Assistant", tools=[WebSearchTool()], instructions="You are a helpful assistant who collects news from the internet from reliable sources and summarizes them.")
@@ -17,16 +19,37 @@ async def News_Tool():
 def Email_Tool(news, email):
     prompt = hub.pull("hwchase17/openai-functions-agent")
 
-    composio_toolset = ComposioToolSet(api_key=st.secrets["COMPOSIO_API_KEY"])
-    tools = composio_toolset.get_tools(actions=['GMAIL_SEND_EMAIL'])
-    agent = create_openai_functions_agent(model, tools, prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
-    email1 = email
-    subject = "Daily AI News"
-    body = news
-    task = f"Send an email to {email1} with the subject {subject} and the body {body}"
-    result = agent_executor.invoke({"input": task})
-    return result
+    # Initialize Composio SDK
+    composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"])
+    user_id = "kaushikj3@gmail.com"  # Using email as user_id for this example
+    
+    try:
+        # Initialize connection request for Gmail
+        connection_request = composio.connected_accounts.initiate(
+            user_id=user_id,
+            auth_config_id="ac_KZp9vn5u3M_9"
+        )
+        
+        
+        # Fetch Gmail tools
+        tools = composio.tools.get(user_id=user_id, toolkits=["GMAIL_SEND_EMAIL"])
+        
+        # Create agent with the tools
+        agent = create_openai_functions_agent(model, tools, prompt)
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+        
+        # Prepare email task
+        subject = "Daily AI News"
+        body = news
+        task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
+        
+        # Execute the task
+        result = agent_executor.invoke({"input": task})
+        return result
+        
+    except Exception as e:
+        st.error(f"Failed to set up Gmail tools: {e}")
+        return None
 
 st.header(":blue[Daily AI News]")
 
@@ -47,8 +70,11 @@ if st.button("Send this news via Email"):
         if email:
             with st.spinner("Sending email..."):
                 try:
-                    Email_Tool(st.session_state['news'], email)
-                    st.success("Email sent!")
+                    result = Email_Tool(st.session_state['news'], email)
+                    if result:
+                        st.success("Email sent successfully!")
+                    else:
+                        st.warning("Email setup completed. Please check the authorization link above.")
                 except Exception as e:
                     st.error(f"Failed to send email: {e}")
     else:
