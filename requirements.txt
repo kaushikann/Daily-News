@@ -1,8 +1,12 @@
 streamlit
 langchain
 langchain-openai
-composio
+composio==0.8.0
 scrapegraphai
 nest_asyncio
 openai-agents
-
+openai
+python-dotenv>=1.0.0
+pydantic>=2.6.4
+httpx>=0.23.0
+requests>=2.26.0
