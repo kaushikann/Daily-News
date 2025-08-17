@@ -63,10 +63,11 @@ if st.button("What's the recent news about AI?", type="primary"):
         st.success("News fetched!")
 st.text_area("Latest AI News", st.session_state['news'], height=300)            
 
-if st.button("Send this news via Email"):
-    if st.session_state['news']:
-        st.write("Give your email address to send this news to your inbox. We do not store your email address!")
-        email = st.text_input("Enter your email")
+
+if st.session_state['news']:
+    st.write("Give your email address to send this news to your inbox. We do not store your email address!")
+    email = st.text_input("Enter your email")
+    if st.button("Send this news via Email"):
         if email:
             with st.spinner("Sending email..."):
                 try:
@@ -77,6 +78,6 @@ if st.button("Send this news via Email"):
                         st.warning("Email setup completed. Please check the authorization link above.")
                 except Exception as e:
                     st.error(f"Failed to send email: {e}")
-    else:
-        st.warning("Please fetch the news first.")
+        else:
+            st.warning("Please fetch the news first.")
 
