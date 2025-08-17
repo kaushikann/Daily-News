@@ -25,11 +25,13 @@ def Email_Tool(news, email):
     
     try:
         # Initialize connection request for Gmail
-        connection_request = composio.connected_accounts.initiate(
-            user_id=user_id,
-            auth_config_id="ac_KZp9vn5u3M_9"
-        )
+        connection_request = composio.toolkits.authorize(user_id=user_id, toolkit="gmail")
         
+        # Display authorization URL for user to visit
+        st.info(f"🔗 Please visit this URL to authorize Gmail access:\n👉 {connection_request.redirect_url}")
+        
+        # Wait for the connection to be active
+        connection_request.wait_for_connection()
         
         # Fetch Gmail tools
         tools = composio.tools.get(user_id=user_id, toolkits=["GMAIL_SEND_EMAIL"])
