@@ -26,21 +26,7 @@ def Email_Tool(news, email):
         openai_client = OpenAI()
         # Get Gmail tools from Composio
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
-        response = openai_client.chat.completions.create(
-            model="gpt-4o-mini",
-            tools=tools,
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {
-                "role": "user",
-                "content": (
-                    f"Send an email to {user_id} with the subject 'Hello from composio 👋🏻' and "
-                    "the body 'Congratulations on sending your first email using AI Agents and Composio!'"
-                ),
-                },
-            ],
-        )
-        """
+
         # Create agent with the tools
         agent = create_openai_functions_agent(model, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
@@ -51,8 +37,8 @@ def Email_Tool(news, email):
         task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
         
         # Execute the task using the agent executor
-        result = agent_executor.invoke({"input": task})"""
-        return response
+        result = agent_executor.invoke({"input": task})
+        return result
         
     except Exception as e:
         st.error(f"Failed to set up Gmail tools: {e}")
@@ -68,7 +54,7 @@ if st.button("What's the recent news about AI?", type="primary"):
         news = asyncio.run(News_Tool())
         st.session_state['news'] = news
         st.success("News fetched!")
-st.text_area("Latest AI News", st.session_state['news'], height=300)            
+        st.text_area("Latest AI News", st.session_state['news'], height=300)            
 
 
 if st.session_state['news']:
@@ -87,5 +73,3 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
-
-
