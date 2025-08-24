@@ -21,31 +21,28 @@ def Email_Tool(news, email):
 
     # Initialize Composio SDK
     composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"])
-    user_id = "kaushikj3@gmail.com"  # Using email as user_id for this example
+    user_id = "agentickaushik@gmail.com"  # Using email as user_id for this example
     
     try:
         # Initialize connection request for Gmail
-        connection_request = composio.toolkits.authorize(user_id=user_id, toolkit="gmail")
+        connection_request = composio.connected_accounts.initiate(
+                user_id=user_id,
+                auth_config_id=st.secrets["GMAIL_AUTH_CONFIG_ID"]
+        )
         
-        # Display authorization URL for user to visit
-        st.info(f"🔗 Please visit this URL to authorize Gmail access:\n👉 {connection_request.redirect_url}")
-        
-        # Wait for the connection to be active
-        connection_request.wait_for_connection()
-        
-        # Fetch Gmail tools
-        tools = composio.tools.get(user_id=user_id, toolkits=["GMAIL_SEND_EMAIL"])
+        tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
         
         # Create agent with the tools
         agent = create_openai_functions_agent(model, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
         
         # Prepare email task
-        subject = "Daily AI News"
+        subject = "Daily AI News by Kaushik's Agent"
         body = news
         task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
         
         # Execute the task
+        
         result = agent_executor.invoke({"input": task})
         return result
         
@@ -67,7 +64,7 @@ st.text_area("Latest AI News", st.session_state['news'], height=300)
 
 
 if st.session_state['news']:
-    st.write("Give your email address to send this news to your inbox. We do not store your email address!")
+    st.write("Give your email address to send this news to your inbox. This will be a one-time email and not a recurring one. We do not store your email address!")
     email = st.text_input("Enter your email")
     if st.button("Send this news via Email"):
         if email:
@@ -77,7 +74,7 @@ if st.session_state['news']:
                     if result:
                         st.success("Email sent successfully!")
                     else:
-                        st.warning("Email setup completed. Please check the authorization link above.")
+                        st.warning("Something went wrong")
                 except Exception as e:
                     st.error(f"Failed to send email: {e}")
         else:
