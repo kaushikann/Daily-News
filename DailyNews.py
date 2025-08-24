@@ -34,7 +34,7 @@ def Email_Tool(news, email):
                 {
                 "role": "user",
                 "content": (
-                    f"Send an email to {userEmail} with the subject 'Hello from composio 👋🏻' and "
+                    f"Send an email to {user_id} with the subject 'Hello from composio 👋🏻' and "
                     "the body 'Congratulations on sending your first email using AI Agents and Composio!'"
                 ),
                 },
@@ -87,3 +87,4 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
+
