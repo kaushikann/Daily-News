@@ -25,7 +25,9 @@ def Email_Tool(news, email):
     try:
         openai_client = ChatOpenAI(model="gpt-5-turbo")
         # Get Gmail tools from Composio
+        st.write("1")
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
+        st.write("2")
         prompt = hub.pull("hwchase17/openai-functions-agent")
         # Prepare email task
         subject = "Daily AI News by Kaushik's Agent"
@@ -73,3 +75,4 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
+
