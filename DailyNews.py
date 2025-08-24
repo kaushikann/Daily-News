@@ -37,6 +37,7 @@ def Email_Tool(news, email):
                
         # Execute the task using the agent executor
         result = agent_executor.invoke({"input": task})
+        st.write(result)    
         return result
         
     except Exception as e:
