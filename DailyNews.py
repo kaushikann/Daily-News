@@ -16,26 +16,25 @@ async def News_Tool():
     return result1.final_output
 
 def Email_Tool(news, email):
-    prompt = hub.pull("hwchase17/openai-functions-agent")
+   
 
     # Initialize Composio SDK
     composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"])
     user_id = "agentickaushik@gmail.com"  # Using email as user_id for this example
     
     try:
-        openai_client = OpenAI()
+        openai_client = ChatOpenAI(model="gpt-5-turbo")
         # Get Gmail tools from Composio
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
-
-        # Create agent with the tools
-        agent = create_openai_functions_agent(model, tools, prompt)
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
-        
+        prompt = hub.pull("hwchase17/openai-functions-agent")
         # Prepare email task
         subject = "Daily AI News by Kaushik's Agent"
         body = news
         task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
-        
+        # Create agent with the tools
+        agent = create_openai_functions_agent(openai_client, tools, prompt)
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
+               
         # Execute the task using the agent executor
         result = agent_executor.invoke({"input": task})
         return result
