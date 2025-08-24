@@ -52,7 +52,7 @@ def Email_Tool(news, email):
         
         # Execute the task using the agent executor
         result = agent_executor.invoke({"input": task})"""
-        return result
+        return response
         
     except Exception as e:
         st.error(f"Failed to set up Gmail tools: {e}")
@@ -87,4 +87,5 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
+
 
