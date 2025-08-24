@@ -3,7 +3,7 @@ import os
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
-model = ChatOpenAI(model="gpt-4o-mini")
+model = ChatOpenAI(model="gpt-5-turbo")
 from langchain.agents import create_openai_functions_agent, AgentExecutor
 from langchain import hub
 from composio import Composio
@@ -30,6 +30,10 @@ def Email_Tool(news, email):
                 auth_config_id=st.secrets["GMAIL_AUTH_CONFIG_ID"]
         )
         
+        # Wait for the connection to be established
+        connected_account = connection_request.wait_for_connection()
+        
+        # Get Gmail tools from Composio
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
         
         # Create agent with the tools
@@ -41,8 +45,7 @@ def Email_Tool(news, email):
         body = news
         task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
         
-        # Execute the task
-        
+        # Execute the task using the agent executor
         result = agent_executor.invoke({"input": task})
         return result
         
