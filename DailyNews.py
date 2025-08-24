@@ -23,15 +23,7 @@ def Email_Tool(news, email):
     user_id = "agentickaushik@gmail.com"  # Using email as user_id for this example
     
     try:
-        # Initialize connection request for Gmail
-        """connection_request = composio.connected_accounts.initiate(
-                user_id=user_id,
-                auth_config_id=st.secrets["GMAIL_AUTH_CONFIG_ID"]
-        )
-        
-        # Wait for the connection to be established
-        connected_account = connection_request.wait_for_connection()"""
-        
+               
         # Get Gmail tools from Composio
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
         
