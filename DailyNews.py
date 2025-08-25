@@ -19,7 +19,7 @@ async def News_Tool():
 
 def Email_Tool(news, email):
    
-    model = init_chat_model("gpt-5-turbo")
+    #model = init_chat_model("gpt-5-turbo")
     # Initialize Composio SDK
     composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"],provider=LangchainProvider())
 
@@ -77,3 +77,4 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
+
