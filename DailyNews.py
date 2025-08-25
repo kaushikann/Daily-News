@@ -3,7 +3,7 @@ import os
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
-model = ChatOpenAI(model="gpt-5-turbo")
+model = ChatOpenAI(model="gpt-4o-mini")
 from langchain.agents import create_openai_functions_agent, AgentExecutor
 from langchain import hub
 from composio import Composio
@@ -19,14 +19,14 @@ async def News_Tool():
 
 def Email_Tool(news, email):
    
-    #model = init_chat_model("gpt-5-turbo")
+    #model = init_chat_model("gpt-4o-mini")
     # Initialize Composio SDK
     composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"],provider=LangchainProvider())
 
     user_id = "agentickaushik@gmail.com"  # Using email as user_id for this example
     
     try:
-        openai_client = ChatOpenAI(model="gpt-5-turbo")
+        openai_client = ChatOpenAI(model="gpt-4o-mini")
         # Get Gmail tools from Composio
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
 
@@ -77,4 +77,5 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
+
 
