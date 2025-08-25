@@ -9,6 +9,8 @@ from langchain import hub
 from composio import Composio
 from agents import Agent, Runner, WebSearchTool
 import asyncio
+from composio_langchain import LangchainProvider
+from langchain.chat_models import init_chat_model
 
 async def News_Tool():
     agent = Agent(name="Assistant", tools=[WebSearchTool()], instructions="You are a helpful assistant who collects news from the internet from reliable sources and summarizes them.")
@@ -17,17 +19,17 @@ async def News_Tool():
 
 def Email_Tool(news, email):
    
-
+    model = init_chat_model("gpt-5-turbo")
     # Initialize Composio SDK
-    composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"])
+    composio = Composio(api_key=st.secrets["COMPOSIO_API_KEY"],provider=LangchainProvider())
+
     user_id = "agentickaushik@gmail.com"  # Using email as user_id for this example
     
     try:
         openai_client = ChatOpenAI(model="gpt-5-turbo")
         # Get Gmail tools from Composio
-        st.write("1")
         tools = composio.tools.get(user_id=user_id, tools=["GMAIL_SEND_EMAIL"])
-        st.write("2")
+
         prompt = hub.pull("hwchase17/openai-functions-agent")
         # Prepare email task
         subject = "Daily AI News by Kaushik's Agent"
@@ -35,13 +37,11 @@ def Email_Tool(news, email):
         task = f"Send an email to {email} with the subject '{subject}' and the body containing the following news: {body}"
         # Create agent with the tools
         agent = create_openai_functions_agent(openai_client, tools, prompt)
-        st.write("3")
         agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=False)
-        st.write("4")
                
         # Execute the task using the agent executor
         result = agent_executor.invoke({"input": task})
-        st.write(result)    
+  
         return result
         
     except Exception as e:
@@ -77,5 +77,3 @@ if st.session_state['news']:
                     st.error(f"Failed to send email: {e}")
         else:
             st.warning("Please fetch the news first.")
-
-
